@@ -24,6 +24,10 @@ class Averager:
     def reset(self):
         self.current_total = 0.0
         self.iterations = 0.0
+
+
+def collate_fn(batch):
+    return tuple(zip(*batch))
         
                 
 # define the training tranforms
@@ -39,6 +43,8 @@ def get_train_transform():
         'format': 'pascal_voc',
         'label_fields': ['labels']
     })
+
+
 # define the validation transforms
 def get_valid_transform():
     return A.Compose([
@@ -47,6 +53,7 @@ def get_valid_transform():
         'format': 'pascal_voc', 
         'label_fields': ['labels']
     })
+
 
 def show_tranformed_image(train_loader):
     """
