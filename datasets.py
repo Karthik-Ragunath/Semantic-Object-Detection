@@ -10,7 +10,7 @@ from utils import collate_fn, get_train_transform, get_valid_transform, get_trai
 import json
 
 # the dataset class
-class MicrocontrollerDataset(Dataset):
+class SemanticObjectDetection(Dataset):
     def __init__(self, dir_path, width, height, classes, transforms=None, transforms_without_boxes=None):
         self.transforms_without_boxes = transforms_without_boxes
         self.transforms = transforms
@@ -167,8 +167,8 @@ class MicrocontrollerDataset(Dataset):
         return len(self.all_images)
     
 # prepare the final datasets and data loaders
-train_dataset = MicrocontrollerDataset(TRAIN_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_train_transform(), get_train_transform_without_boxes())
-valid_dataset = MicrocontrollerDataset(VALID_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_valid_transform(), get_train_transform_without_boxes())
+train_dataset = SemanticObjectDetection(TRAIN_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_train_transform(), get_train_transform_without_boxes())
+valid_dataset = SemanticObjectDetection(VALID_DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_valid_transform(), get_train_transform_without_boxes())
 train_loader = DataLoader(
     train_dataset,
     batch_size=BATCH_SIZE,
@@ -192,7 +192,7 @@ print(f"Number of validation samples: {len(valid_dataset)}\n")
 # USAGE: python datasets.py
 if __name__ == '__main__':
     # sanity check of the Dataset pipeline with sample visualization
-    dataset = MicrocontrollerDataset(
+    dataset = SemanticObjectDetection(
         TRAIN_DIR, RESIZE_TO, RESIZE_TO, CLASSES
     )
     print(f"Number of training images: {len(dataset)}")
