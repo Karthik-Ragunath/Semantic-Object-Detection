@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 from albumentations.pytorch import ToTensorV2
 from config import DEVICE, CLASSES as classes
+
+
 # this class keeps track of the training and validation loss values...
 # ... and helps to get the average for each epoch as well
 class Averager:
@@ -27,6 +29,10 @@ class Averager:
 
 
 def collate_fn(batch):
+    """
+    To handle the data loading as different images may have different number 
+    of objects and to handle varying size tensors as well.
+    """
     return tuple(zip(*batch))
         
                 
@@ -43,6 +49,17 @@ def get_train_transform():
         'format': 'pascal_voc',
         'label_fields': ['labels']
     })
+
+
+def get_train_transform_without_boxes():
+    return A.Compose([
+        A.Flip(0.5),
+        A.RandomRotate90(0.5),
+        A.MotionBlur(p=0.2),
+        A.MedianBlur(blur_limit=3, p=0.1),
+        A.Blur(blur_limit=3, p=0.1),
+        ToTensorV2(p=1.0)
+    ])
 
 
 # define the validation transforms
