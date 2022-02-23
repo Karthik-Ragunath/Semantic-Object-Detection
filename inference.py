@@ -10,7 +10,7 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 # load the model and the trained weights
 model = create_model(num_classes=5).to(device)
 model.load_state_dict(torch.load(
-    'outputs/model3.pth', map_location=device
+    'outputs/model10.pth', map_location=device
 ))
 model.eval()
 
