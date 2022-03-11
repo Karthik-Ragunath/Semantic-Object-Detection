@@ -4,6 +4,8 @@ import torch
 import glob as glob
 from model import create_model
 import matplotlib.pyplot as plt
+import albumentations as A
+from albumentations.augmentations.crops.transforms import Crop
 
 # set the computation device
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
@@ -59,10 +61,21 @@ for i in range(len(test_images)):
         
         # draw the bounding boxes and write the class name on top of it
         for j, box in enumerate(draw_boxes):
+            transform = A.Compose(
+                [
+                    Crop(x_min=int(box[0]), y_min=int(box[1]), x_max=int(box[2]), y_max=int(box[3]))
+                ])
+            transformed_image = transform(image = orig_image)
+
             cv2.rectangle(orig_image,
                         (int(box[0]), int(box[1])),
                         (int(box[2]), int(box[3])),
                         (0, 0, 255), 2)
+            sampled_image = torch.tensor(transformed_image['image'])
+            sampled_image = cv2.cvtColor(np.float32(sampled_image), cv2.COLOR_RGB2GRAY)
+            fig = plt.figure()
+            plt.imshow(sampled_image)
+            plt.savefig('data/cropped_test_images/' + 'testimage' + '_{image_index}_{box_index}.png'.format(image_index=i, box_index=j))
             # cv2.putText(orig_image, pred_classes[j], 
             #             (int(box[0]), int(box[1]-5)),
             #             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 
