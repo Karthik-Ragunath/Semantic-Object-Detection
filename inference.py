@@ -33,6 +33,7 @@ for i in range(len(test_images)):
     # get the image file name for saving output later on
     image_name = test_images[i].split('/')[-1].split('.')[0]
     image = cv2.imread(test_images[i])
+    print('#' * 50, "Image Shape:", image.shape, '#' * 50)
     orig_image = image.copy()
     # BGR to RGB
     image = cv2.cvtColor(orig_image, cv2.COLOR_BGR2RGB).astype(np.float32)
