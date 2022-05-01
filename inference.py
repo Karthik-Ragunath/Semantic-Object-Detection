@@ -29,7 +29,9 @@ CLASSES = [
 # ... any detection having score below this will be discarded
 detection_threshold = 0.8
 
-for i in range(len(test_images)):
+concatenated_images = torch.tensor([])
+
+for i in range(0, 2, 1):
     # get the image file name for saving output later on
     image_name = test_images[i].split('/')[-1].split('.')[0]
     image = cv2.imread(test_images[i])
@@ -45,9 +47,16 @@ for i in range(len(test_images)):
     image = torch.tensor(image, dtype=torch.float).cuda()
     # add batch dimension
     image = torch.unsqueeze(image, 0)
-    with torch.no_grad():
-        outputs = model(image)
-    
+    if concatenated_images.numel() == 0:
+        concatenated_images = image
+    else:
+        concatenated_images = torch.concat((concatenated_images, image), dim=0)
+
+with torch.no_grad():
+    outputs = model(concatenated_images)
+
+print(outputs)
+'''
     # load all detection to CPU for further operations
     outputs = [{k: v.to('cpu') for k, v in t.items()} for t in outputs]
     # carry further only if there are detected boxes
@@ -85,5 +94,6 @@ for i in range(len(test_images)):
         plt.savefig("test_prediction" + str(i) + ".png")
     print(f"Image {i+1} done...")
     print('-'*50)
+'''
 print('TEST PREDICTIONS COMPLETE')
 # cv2.destroyAllWindows()
